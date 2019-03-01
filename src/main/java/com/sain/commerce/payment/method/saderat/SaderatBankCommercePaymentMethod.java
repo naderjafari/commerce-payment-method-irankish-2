@@ -16,8 +16,6 @@ package com.sain.commerce.payment.method.saderat;
 
 import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.constants.CommercePaymentConstants;
-import com.liferay.commerce.currency.model.CommerceCurrency;
-import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.payment.method.CommercePaymentMethod;
 //import com.liferay.commerce.payment.method.mercanet.internal.configuration.SaderatGroupServiceConfiguration;
 //import com.liferay.commerce.payment.method.mercanet.internal.connector.Environment;
@@ -28,22 +26,17 @@ import com.liferay.commerce.payment.result.CommercePaymentResult;
 import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
-import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
-import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.sain.commerce.payment.method.saderat.constants.SaderatBankCommercePaymentMethodConstants;
-import com.worldline.sips.model.*;
-import com.worldline.sips.model.Currency;
+import com.sain.commerce.payment.method.saderat.ikc.ITokens;
+import com.sain.commerce.payment.method.saderat.ikc.MakeTokenResponse;
+import com.sain.commerce.payment.method.saderat.ikc.Service1;
+import com.sain.commerce.payment.method.saderat.ikc.TokenResponse;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-import java.math.BigDecimal;
-import java.net.URL;
-import java.net.URLEncoder;
+import javax.xml.bind.JAXBElement;
 import java.util.*;
 
 /**
@@ -58,11 +51,11 @@ public class SaderatBankCommercePaymentMethod implements CommercePaymentMethod {
 
 	public static final String KEY = "saderat";
 
-//	@Override
-//	public CommercePaymentResult completePayment(
-//			CommercePaymentRequest commercePaymentRequest)
-//		throws Exception {
-//
+	@Override
+	public CommercePaymentResult completePayment(
+			CommercePaymentRequest commercePaymentRequest)
+		throws Exception {
+
 //		MercanetCommercePaymentRequest authorizeNetCommercePaymentRequest =
 //			(MercanetCommercePaymentRequest)commercePaymentRequest;
 //
@@ -70,7 +63,12 @@ public class SaderatBankCommercePaymentMethod implements CommercePaymentMethod {
 //			null, authorizeNetCommercePaymentRequest.getCommerceOrderId(),
 //			CommerceOrderConstants.PAYMENT_STATUS_PAID, false, null, null,
 //			Collections.emptyList(), true);
-//	}
+        System.out.println("completePayment ....");
+        return new CommercePaymentResult(
+                null, commercePaymentRequest.getCommerceOrderId(),
+                CommerceOrderConstants.PAYMENT_STATUS_PAID, false, null, null,
+                Collections.emptyList(), true);
+	}
 
 	@Override
 	public String getDescription(Locale locale) {
@@ -92,12 +90,12 @@ public class SaderatBankCommercePaymentMethod implements CommercePaymentMethod {
 	@Override
 	public int getPaymentType() {
 		return CommercePaymentConstants.
-			COMMERCE_PAYMENT_METHOD_TYPE_ONLINE_REDIRECT;
+				COMMERCE_PAYMENT_METHOD_TYPE_OFFLINE;
 	}
 
 	@Override
 	public String getServletPath() {
-		return SaderatBankCommercePaymentMethodConstants.SERVLET_PATH;
+		return null;
 	}
 
 	@Override
@@ -110,11 +108,11 @@ public class SaderatBankCommercePaymentMethod implements CommercePaymentMethod {
 		return true;
 	}
 
-//	@Override
-//	public CommercePaymentResult processPayment(
-//			CommercePaymentRequest commercePaymentRequest)
-//		throws Exception {
-//
+	@Override
+	public CommercePaymentResult processPayment(
+			CommercePaymentRequest commercePaymentRequest)
+		throws Exception {
+
 //		MercanetCommercePaymentRequest mercanetCommercePaymentRequest =
 //			(MercanetCommercePaymentRequest)commercePaymentRequest;
 //
@@ -224,7 +222,18 @@ public class SaderatBankCommercePaymentMethod implements CommercePaymentMethod {
 //		return new CommercePaymentResult(
 //			transactionReference.toString(), commerceOrder.getCommerceOrderId(),
 //			-1, true, url, null, resultMessage, true);
-//	}
+        System.out.println("Processs .... ");
+        Service1 service1 = new Service1();
+        ITokens iTokens = service1.getBasicHttpBindingITokens();
+        TokenResponse tokenResponse = iTokens.makeToken("1000","BF40","111111","11111","","https://google.com","");
+        System.out.println("tokenResponse.getToken().getValue() = " + tokenResponse.getToken().getValue());
+        System.out.println("tokenResponse.getToken().getValue() = " + tokenResponse.getMessage().getValue());
+//        System.out.println("tokenResponse.getToken().getValue() = " + tokenResponse.getMessage().getValue());
+        return new CommercePaymentResult(
+                null, commercePaymentRequest.getCommerceOrderId(),
+                CommerceOrderConstants.PAYMENT_STATUS_AUTHORIZED, false, null, null,
+                Collections.emptyList(), true);
+	}
 
 //	private SaderatGroupServiceConfiguration _getConfiguration(Long groupId)
 //		throws ConfigurationException {
