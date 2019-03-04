@@ -18,6 +18,3 @@
 <%
     String redirect = ParamUtil.getString(request, "redirect");
 %>
-
-fdfdfdf
-EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
