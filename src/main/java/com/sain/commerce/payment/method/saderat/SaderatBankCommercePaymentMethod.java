@@ -15,6 +15,7 @@
 package com.sain.commerce.payment.method.saderat;
 
 import com.liferay.commerce.constants.CommerceOrderConstants;
+import com.liferay.commerce.constants.CommerceOrderPaymentConstants;
 import com.liferay.commerce.constants.CommercePaymentConstants;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.model.CommerceOrder;
@@ -86,9 +87,28 @@ public class SaderatBankCommercePaymentMethod implements CommercePaymentMethod {
 		SaderatCommercePaymentRequest authorizeNetCommercePaymentRequest =
 				(SaderatCommercePaymentRequest)commercePaymentRequest;
 
+
+		List<String> resultMessage = Collections.singletonList(
+				"okkkkkkkkkkkk");
+		System.out.println("######################## authorizeNetCommercePaymentRequest.getCommerceOrderId() = " + authorizeNetCommercePaymentRequest.getCommerceOrderId());
+		List<String> messages = new ArrayList<>();
+
+		messages.add("faild-faild");
 		return new CommercePaymentResult(
 				null, authorizeNetCommercePaymentRequest.getCommerceOrderId(),
 				CommerceOrderConstants.PAYMENT_STATUS_PAID, false, null, null,
+				messages, true);
+	}
+
+	@Override
+	public CommercePaymentResult cancelPayment(
+			CommercePaymentRequest commercePaymentRequest) {
+
+		System.out.println("HERE IS CanCELLLLLLLLL");
+
+		return new CommercePaymentResult(
+				null, commercePaymentRequest.getCommerceOrderId(),
+				CommerceOrderPaymentConstants.STATUS_CANCELLED, false, null, null,
 				Collections.emptyList(), true);
 	}
 
@@ -140,7 +160,7 @@ public class SaderatBankCommercePaymentMethod implements CommercePaymentMethod {
 
 		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
 			saderatCommercePaymentRequest.getCommerceOrderId());
-
+		System.out.println("saderatCommercePaymentRequest.getCommerceOrderId() = " + saderatCommercePaymentRequest.getCommerceOrderId());
 //		if(true){
 //			throw new PortalException("Mercanet acccept only EUR currency..............");
 //		}
@@ -198,7 +218,10 @@ public class SaderatBankCommercePaymentMethod implements CommercePaymentMethod {
 		automaticUrl.append(StringPool.AMPERSAND);
 		automaticUrl.append("uuid=");
 		automaticUrl.append(parameters.get("uuid"));
-
+		automaticUrl.append(StringPool.AMPERSAND);
+		automaticUrl.append("redirect=");
+		automaticUrl.append(parameters.get("redirect"));
+		System.out.println("parameters.get(\"uuid\") = " + parameters.get("uuid"));
 		System.out.println("normalUrl = " + normalUrl);
 		System.out.println("automaticUrl = " + automaticUrl);
 
@@ -210,7 +233,7 @@ public class SaderatBankCommercePaymentMethod implements CommercePaymentMethod {
 
 		paymentRequest.setNormalReturnUrl(normalURL);
 
-		paymentRequest.setCaptureMode(CaptureMode.IMMEDIATE);
+		paymentRequest.setCaptureMode(CaptureMode.VALIDATION);
 		paymentRequest.setCurrencyCode(Currency.EUR);
 		paymentRequest.setCustomerId(String.valueOf(commerceOrder.getUserId()));
 		paymentRequest.setOrderChannel(OrderChannel.INTERNET);
@@ -245,14 +268,20 @@ public class SaderatBankCommercePaymentMethod implements CommercePaymentMethod {
 //
 //		URL redirectionUrl = initializationResponse.getRedirectionUrl();
 
+		System.out.println("Processs .... ");
+		Service1 service1 = new Service1();
+		ITokens iTokens = service1.getBasicHttpBindingITokens();
+		TokenResponse tokenResponse = iTokens.makeToken("1000","D0FD",String.valueOf(saderatCommercePaymentRequest.getCommerceOrderId()),
+				String.valueOf(saderatCommercePaymentRequest.getCommerceOrderId()),"",
+				automaticUrl.toString(),"");
+		System.out.println("tokenResponse.getToken().getValue() = " + tokenResponse.getToken().getValue());
+		System.out.println("tokenResponse.getToken().getValue() = " + tokenResponse.getMessage().getValue());
+
 		String url = StringBundler.concat(
-			_getServletUrl(saderatCommercePaymentRequest), StringPool.QUESTION,
-			"redirectUrl=", "http://google.com", StringPool.AMPERSAND,
-			"redirectionData=",
-			URLEncoder.encode(
-				"gggg", "UTF-8"),
-			StringPool.AMPERSAND, "seal=",
-			URLEncoder.encode("gggg", "UTF-8"));
+				_getServletUrl(saderatCommercePaymentRequest), StringPool.QUESTION,
+				"redirectUrl=", "https://ikc.shaparak.ir/tpayment/payment/Index", StringPool.AMPERSAND,
+				"token=",tokenResponse.getToken().getValue(),StringPool.AMPERSAND,
+				"merchantId=","D0FD");
 //
 		List<String> resultMessage = Collections.singletonList(
 			"okkkkkkkkkkkk");
@@ -260,13 +289,8 @@ public class SaderatBankCommercePaymentMethod implements CommercePaymentMethod {
 		return new CommercePaymentResult(
 			transactionReference.toString(), commerceOrder.getCommerceOrderId(),
 			-1, true, url, null, resultMessage, true);
-//        System.out.println("Processs .... ");
-//        Service1 service1 = new Service1();
-//        ITokens iTokens = service1.getBasicHttpBindingITokens();
-//        TokenResponse tokenResponse = iTokens.makeToken("1000","BF40","111111","11111","","https://google.com","");
-//        System.out.println("tokenResponse.getToken().getValue() = " + tokenResponse.getToken().getValue());
+
 //        System.out.println("tokenResponse.getToken().getValue() = " + tokenResponse.getMessage().getValue());
-////        System.out.println("tokenResponse.getToken().getValue() = " + tokenResponse.getMessage().getValue());
 //        return new CommercePaymentResult(
 //                null, commercePaymentRequest.getCommerceOrderId(),
 //                CommerceOrderConstants.PAYMENT_STATUS_AUTHORIZED, false, null, null,

@@ -131,12 +131,25 @@ public class SaderatServlet extends HttpServlet {
 //			if (Objects.equals("automatic", type)) {
 				long groupId = ParamUtil.getLong(httpServletRequest, "groupId");
 				String uuid = ParamUtil.getString(httpServletRequest, "uuid");
-//
+				System.out.println("uuid = " + uuid);
+				System.out.println("groupId = " + groupId);
+
+				String referenceId = ParamUtil.getString(httpServletRequest, "referenceId");
+				String resultCode = ParamUtil.getString(httpServletRequest, "resultCode");
+				String invoiceNumber = ParamUtil.getString(httpServletRequest, "paymentId");
+				String token = ParamUtil.getString(httpServletRequest, "token");
+				String redirect = ParamUtil.getString(httpServletRequest, "redirect");
+			System.out.println("referenceId = " + referenceId);
+			System.out.println("resultCode = " + resultCode);
+			System.out.println("invoiceNumber = " + invoiceNumber);
+			System.out.println("redirect = " + redirect);
+			System.out.println("token = " + token);
+////
 //				String data = httpServletRequest.getParameter("Data");
-//
+////
 //				Map<String, String> parametersMap = _getResponseParameters(
 //					data);
-//
+
 				CommerceOrder commerceOrder =
 					_commerceOrderLocalService.getCommerceOrderByUuidAndGroupId(
 						uuid, groupId);
@@ -194,13 +207,19 @@ public class SaderatServlet extends HttpServlet {
 //						responseData.getTransactionReference(),
 //						transactionReference.toString())) {
 //
-					_commercePaymentEngine.completePayment(
+			System.out.println("**************************** commerceOrder.getCommerceOrderId() = " + commerceOrder.getCommerceOrderId());
+					_commercePaymentEngine.cancelPayment(
 						commerceOrder.getCommerceOrderId(),
 						transactionReference.toString(), httpServletRequest);
+
+			httpServletResponse.sendRedirect(redirect);
+
+			System.out.println("hereeeeeeeeeeee END Do gettttttttttt ");
 //				}
 //			}
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			_portal.sendError(e, httpServletRequest, httpServletResponse);
 		}
 	}
@@ -223,6 +242,8 @@ public class SaderatServlet extends HttpServlet {
 		{
 			String name = param.split(StringPool.EQUAL)[0];
 			String value = param.split(StringPool.EQUAL)[1];
+
+			System.out.println("name = " + name + " : "+value);
 
 			map.put(name, value);
 		}

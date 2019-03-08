@@ -18,16 +18,20 @@
 
 <%
 String redirectUrl = (String)request.getAttribute("redirectUrl");
-String redirectionDataAttribute = (String)request.getAttribute("redirectionData");
-String redirectionData = URLDecoder.decode(redirectionDataAttribute, "UTF-8");
-String sealAttribute = (String)request.getAttribute("seal");
-String seal = URLDecoder.decode(sealAttribute, "UTF-8");
+String merchantId = (String)request.getAttribute("merchantId");
+String token = (String)request.getAttribute("token");
+	System.out.println("merchantId = " + merchantId);
+	System.out.println("redirectUrl = " + redirectUrl);
+	System.out.println("token = " + token);
 %>
 
 <form action="<%= redirectUrl %>" id="formMercanet" method="post" name="formMercanet" style="display: none">
-	<input name="redirectionData" type="hidden" value="<%= redirectionData %>" />
-	<input name="seal" type="hidden" value="<%= seal %>" />
-	<input type="submit" value="Proceed to checkout" />
+	<%--<input name="redirectionData" type="hidden" value="<%= redirectionData %>" />--%>
+	<%--<input name="seal" type="hidden" value="<%= seal %>" />--%>
+	<%--<input type="submit" value="Proceed to checkout" />--%>
+
+	<input type="hidden" name="merchantId" id="<portlet:namespace />merchantId" value="<%= merchantId %>">
+	<input type="hidden" name="token" id="<portlet:namespace />token" value="<%= token %>" >
 </form>
 
 <script>
