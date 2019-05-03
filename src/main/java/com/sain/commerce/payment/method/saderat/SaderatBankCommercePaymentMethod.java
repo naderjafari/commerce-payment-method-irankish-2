@@ -43,8 +43,7 @@ import com.sain.commerce.payment.method.saderat.ikc.ITokens;
 import com.sain.commerce.payment.method.saderat.ikc.MakeTokenResponse;
 import com.sain.commerce.payment.method.saderat.ikc.Service1;
 import com.sain.commerce.payment.method.saderat.ikc.TokenResponse;
-import com.worldline.sips.model.*;
-import com.worldline.sips.model.Currency;
+
 import org.omg.CORBA.Environment;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -90,7 +89,7 @@ public class SaderatBankCommercePaymentMethod implements CommercePaymentMethod {
 
 		List<String> resultMessage = Collections.singletonList(
 				"okkkkkkkkkkkk");
-		System.out.println("######################## authorizeNetCommercePaymentRequest.getCommerceOrderId() = " + authorizeNetCommercePaymentRequest.getCommerceOrderId());
+		System.out.println("##############22########## authorizeNetCommercePaymentRequest.getCommerceOrderId() = " + authorizeNetCommercePaymentRequest.getCommerceOrderId());
 		List<String> messages = new ArrayList<>();
 
 		messages.add("faild-faild");
@@ -105,11 +104,16 @@ public class SaderatBankCommercePaymentMethod implements CommercePaymentMethod {
 			CommercePaymentRequest commercePaymentRequest) {
 
 		System.out.println("HERE IS CanCELLLLLLLLL");
+		System.out.println("HERE IS CanCELLLLLLLLL :: "+commercePaymentRequest.getCommerceOrderId());
+
+		List<String> messages = new ArrayList<>();
+
+		messages.add("faild-faild");
 
 		return new CommercePaymentResult(
 				null, commercePaymentRequest.getCommerceOrderId(),
 				CommerceOrderPaymentConstants.STATUS_CANCELLED, false, null, null,
-				Collections.emptyList(), true);
+				messages, true);
 	}
 
 	@Override
@@ -151,6 +155,11 @@ public class SaderatBankCommercePaymentMethod implements CommercePaymentMethod {
 	}
 
 	@Override
+	public boolean isCancelEnabled() {
+		return true;
+	}
+
+	@Override
 	public CommercePaymentResult processPayment(
 			CommercePaymentRequest commercePaymentRequest)
 		throws Exception {
@@ -173,7 +182,7 @@ public class SaderatBankCommercePaymentMethod implements CommercePaymentMethod {
 //			throw new Exception("Mercanet acccept only EUR currency");
 //		}
 
-		PaymentRequest paymentRequest = new PaymentRequest();
+//		PaymentRequest paymentRequest = new PaymentRequest();
 
 		int normalizedMultiplier = (int)Math.pow(
 			10.00, commerceCurrency.getMaxFractionDigits());
@@ -183,7 +192,7 @@ public class SaderatBankCommercePaymentMethod implements CommercePaymentMethod {
 		BigDecimal powOrderTotal = orderTotal.multiply(
 			new BigDecimal(normalizedMultiplier));
 
-		paymentRequest.setAmount(powOrderTotal.intValue());
+//		paymentRequest.setAmount(powOrderTotal.intValue());
 
 		System.out.println("powOrderTotal = " + powOrderTotal);
 
@@ -229,16 +238,16 @@ public class SaderatBankCommercePaymentMethod implements CommercePaymentMethod {
 
 		URL automaticURL = new URL(automaticUrl.toString());
 
-		paymentRequest.setAutomaticResponseUrl(automaticURL);
+//		paymentRequest.setAutomaticResponseUrl(automaticURL);
 
-		paymentRequest.setNormalReturnUrl(normalURL);
-
-		paymentRequest.setCaptureMode(CaptureMode.VALIDATION);
-		paymentRequest.setCurrencyCode(Currency.EUR);
-		paymentRequest.setCustomerId(String.valueOf(commerceOrder.getUserId()));
-		paymentRequest.setOrderChannel(OrderChannel.INTERNET);
-		paymentRequest.setOrderId(
-			String.valueOf(commerceOrder.getCommerceOrderId()));
+//		paymentRequest.setNormalReturnUrl(normalURL);
+//
+//		paymentRequest.setCaptureMode(CaptureMode.VALIDATION);
+//		paymentRequest.setCurrencyCode(Currency.EUR);
+//		paymentRequest.setCustomerId(String.valueOf(commerceOrder.getUserId()));
+//		paymentRequest.setOrderChannel(OrderChannel.INTERNET);
+//		paymentRequest.setOrderId(
+//			String.valueOf(commerceOrder.getCommerceOrderId()));
 
 		StringBuilder transactionReference = new StringBuilder();
 
@@ -246,7 +255,7 @@ public class SaderatBankCommercePaymentMethod implements CommercePaymentMethod {
 		transactionReference.append(commerceOrder.getGroupId());
 		transactionReference.append(commerceOrder.getCommerceOrderId());
 
-		paymentRequest.setTransactionReference(transactionReference.toString());
+//		paymentRequest.setTransactionReference(transactionReference.toString());
 
 		SaderatGroupServiceConfiguration mercanetGroupServiceConfiguration =
 			_getConfiguration(commerceOrder.getGroupId());
@@ -284,11 +293,16 @@ public class SaderatBankCommercePaymentMethod implements CommercePaymentMethod {
 				"merchantId=","D0FD");
 //
 		List<String> resultMessage = Collections.singletonList(
-			"okkkkkkkkkkkk");
+			"okkkkkkkkkkkk 1111 ");
 //
+//		return new CommercePaymentResult(
+//			transactionReference.toString(), commerceOrder.getCommerceOrderId(),
+//			-1, true, url, null, resultMessage, true);
+
 		return new CommercePaymentResult(
-			transactionReference.toString(), commerceOrder.getCommerceOrderId(),
-			-1, true, url, null, resultMessage, true);
+				transactionReference.toString(), commerceOrder.getCommerceOrderId(),
+				CommerceOrderConstants.PAYMENT_STATUS_AUTHORIZED, true, url, null,
+				resultMessage, true);
 
 //        System.out.println("tokenResponse.getToken().getValue() = " + tokenResponse.getMessage().getValue());
 //        return new CommercePaymentResult(

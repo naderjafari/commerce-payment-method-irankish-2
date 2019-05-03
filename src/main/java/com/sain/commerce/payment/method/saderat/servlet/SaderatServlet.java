@@ -32,9 +32,7 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.sain.commerce.payment.method.saderat.configuration.SaderatGroupServiceConfiguration;
 import com.sain.commerce.payment.method.saderat.constants.SaderatBankCommercePaymentMethodConstants;
-import com.worldline.sips.model.PaypageResponse;
-import com.worldline.sips.model.ResponseCode;
-import com.worldline.sips.model.ResponseData;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
