@@ -33,10 +33,7 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
-import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
-import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.*;
 import com.sain.commerce.payment.method.saderat.configuration.SaderatGroupServiceConfiguration;
 import com.sain.commerce.payment.method.saderat.constants.SaderatBankCommercePaymentMethodConstants;
 import com.sain.commerce.payment.method.saderat.ikc.ITokens;
@@ -44,10 +41,13 @@ import com.sain.commerce.payment.method.saderat.ikc.MakeTokenResponse;
 import com.sain.commerce.payment.method.saderat.ikc.Service1;
 import com.sain.commerce.payment.method.saderat.ikc.TokenResponse;
 
+import com.sain.commerce.payment.method.saderat.ikc.verify.IVerify;
+import com.sain.commerce.payment.method.saderat.ikc.verify.Verify;
 import org.omg.CORBA.Environment;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.JAXBElement;
 import java.math.BigDecimal;
 import java.net.URL;
@@ -75,7 +75,7 @@ public class SaderatBankCommercePaymentMethod implements CommercePaymentMethod {
 //			(MercanetCommercePaymentRequest)commercePaymentRequest;
 //
 //		return new CommercePaymentResult(
-//			null, authorizeNetCommercePaymentRequest.getCommerceOrderId(),
+//			null, authorizeNetCommercePcompletePaymentaymentRequest.getCommerceOrderId(),
 //			CommerceOrderConstants.PAYMENT_STATUS_PAID, false, null, null,
 //			Collections.emptyList(), true);
 //        System.out.println("completePayment ....");
@@ -91,8 +91,28 @@ public class SaderatBankCommercePaymentMethod implements CommercePaymentMethod {
 				"okkkkkkkkkkkk");
 		System.out.println("##############22########## authorizeNetCommercePaymentRequest.getCommerceOrderId() = " + authorizeNetCommercePaymentRequest.getCommerceOrderId());
 		List<String> messages = new ArrayList<>();
+        HttpServletRequest httpServletRequest = authorizeNetCommercePaymentRequest.getHttpServletRequest();
 
-		messages.add("faild-faild");
+        Verify verify = new Verify();
+        verify.getBasicHttpBindingIVerify();
+        IVerify iVerify = verify.getBasicHttpBindingIVerify();
+        String referenceId = ParamUtil.getString(httpServletRequest, "referenceId");
+        String resultCode = ParamUtil.getString(httpServletRequest, "resultCode");
+        String invoiceNumber = ParamUtil.getString(httpServletRequest, "paymentId");
+        String token = ParamUtil.getString(httpServletRequest, "token");
+        String redirect = ParamUtil.getString(httpServletRequest, "redirect");
+
+        System.out.println("referenceId = " + referenceId);
+        System.out.println("resultCode = " + resultCode);
+        System.out.println("invoiceNumber = " + invoiceNumber);
+        System.out.println("redirect = " + redirect);
+        System.out.println("token = " + token);
+
+        Long aLong = iVerify.kicccPaymentsVerification(token,"D0FD",
+                referenceId,"");
+        System.out.println("aLong = " + aLong.longValue());
+
+//        messages.add("faild-faild");
 		return new CommercePaymentResult(
 				null, authorizeNetCommercePaymentRequest.getCommerceOrderId(),
 				CommerceOrderConstants.PAYMENT_STATUS_PAID, false, null, null,

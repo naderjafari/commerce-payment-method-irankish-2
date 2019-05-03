@@ -1,11 +1,11 @@
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
+ * <p>
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- *
+ * <p>
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
@@ -53,58 +53,57 @@ import java.util.Objects;
  * @author Luca Pellizzon
  */
 @Component(
-	immediate = true,
-	property = {
-		"osgi.http.whiteboard.context.path=/" + SaderatBankCommercePaymentMethodConstants.SERVLET_PATH,
-		"osgi.http.whiteboard.servlet.name=com.sain.commerce.payment.method.saderat.servlet.SaderatServlet",
-		"osgi.http.whiteboard.servlet.pattern=/" + SaderatBankCommercePaymentMethodConstants.SERVLET_PATH + "/*"
-	},
-	service = Servlet.class
+        immediate = true,
+        property = {
+                "osgi.http.whiteboard.context.path=/" + SaderatBankCommercePaymentMethodConstants.SERVLET_PATH,
+                "osgi.http.whiteboard.servlet.name=com.sain.commerce.payment.method.saderat.servlet.SaderatServlet",
+                "osgi.http.whiteboard.servlet.pattern=/" + SaderatBankCommercePaymentMethodConstants.SERVLET_PATH + "/*"
+        },
+        service = Servlet.class
 )
 public class SaderatServlet extends HttpServlet {
 
-	@Override
-	protected void doGet(
-			HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse)
-		throws IOException, ServletException {
+    @Override
+    protected void doGet(
+            HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse)
+            throws IOException, ServletException {
 
-		try {
-			HttpSession httpSession = httpServletRequest.getSession();
+        try {
+            HttpSession httpSession = httpServletRequest.getSession();
 
-			System.out.println("HERER DO GETTTTTTTTTTT SERVLETTTTTTTTTTTTT.....");
+            System.out.println("HERER DO GETTTTTTTTTTT SERVLETTTTTTTTTTTTT.....");
 
-			if (PortalSessionThreadLocal.getHttpSession() == null) {
-				PortalSessionThreadLocal.setHttpSession(httpSession);
-			}
+            if (PortalSessionThreadLocal.getHttpSession() == null) {
+                PortalSessionThreadLocal.setHttpSession(httpSession);
+            }
 
-			User user = _portal.getUser(httpServletRequest);
+            User user = _portal.getUser(httpServletRequest);
 
-			PermissionChecker permissionChecker =
-				PermissionCheckerFactoryUtil.create(user);
+            PermissionChecker permissionChecker =
+                    PermissionCheckerFactoryUtil.create(user);
 
-			PermissionThreadLocal.setPermissionChecker(permissionChecker);
+            PermissionThreadLocal.setPermissionChecker(permissionChecker);
 
-			RequestDispatcher requestDispatcher =
-				_servletContext.getRequestDispatcher(
-					"/saderat_form/saderat-form.jsp");
+            RequestDispatcher requestDispatcher =
+                    _servletContext.getRequestDispatcher(
+                            "/saderat_form/saderat-form.jsp");
 
-			requestDispatcher.forward(httpServletRequest, httpServletResponse);
-		}
-		catch (Exception e) {
-			_portal.sendError(e, httpServletRequest, httpServletResponse);
-		}
-	}
+            requestDispatcher.forward(httpServletRequest, httpServletResponse);
+        } catch (Exception e) {
+            _portal.sendError(e, httpServletRequest, httpServletResponse);
+        }
+    }
 
-	@Override
-	protected void doPost(
-			HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse)
-		throws IOException, ServletException {
-		System.out.println("Here Do POST IN SERVLET ...");
-		try {
-			String type = ParamUtil.getString(httpServletRequest, "type");
-			System.out.println("type = " + type);
+    @Override
+    protected void doPost(
+            HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse)
+            throws IOException, ServletException {
+        System.out.println("Here Do POST IN SERVLET ...");
+        try {
+            String type = ParamUtil.getString(httpServletRequest, "type");
+            System.out.println("type = " + type);
 //
 //			if (Objects.equals("normal", type)) {
 //				HttpSession httpSession = httpServletRequest.getSession();
@@ -127,30 +126,30 @@ public class SaderatServlet extends HttpServlet {
 //			}
 //
 //			if (Objects.equals("automatic", type)) {
-				long groupId = ParamUtil.getLong(httpServletRequest, "groupId");
-				String uuid = ParamUtil.getString(httpServletRequest, "uuid");
-				System.out.println("uuid = " + uuid);
-				System.out.println("groupId = " + groupId);
+            long groupId = ParamUtil.getLong(httpServletRequest, "groupId");
+            String uuid = ParamUtil.getString(httpServletRequest, "uuid");
+            System.out.println("uuid = " + uuid);
+            System.out.println("groupId = " + groupId);
 
-				String referenceId = ParamUtil.getString(httpServletRequest, "referenceId");
-				String resultCode = ParamUtil.getString(httpServletRequest, "resultCode");
-				String invoiceNumber = ParamUtil.getString(httpServletRequest, "paymentId");
-				String token = ParamUtil.getString(httpServletRequest, "token");
-				String redirect = ParamUtil.getString(httpServletRequest, "redirect");
-			System.out.println("referenceId = " + referenceId);
-			System.out.println("resultCode = " + resultCode);
-			System.out.println("invoiceNumber = " + invoiceNumber);
-			System.out.println("redirect = " + redirect);
-			System.out.println("token = " + token);
+            String referenceId = ParamUtil.getString(httpServletRequest, "referenceId");
+            String resultCode = ParamUtil.getString(httpServletRequest, "resultCode");
+            String invoiceNumber = ParamUtil.getString(httpServletRequest, "paymentId");
+            String token = ParamUtil.getString(httpServletRequest, "token");
+            String redirect = ParamUtil.getString(httpServletRequest, "redirect");
+            System.out.println("referenceId = " + referenceId);
+            System.out.println("resultCode = " + resultCode);
+            System.out.println("invoiceNumber = " + invoiceNumber);
+            System.out.println("redirect = " + redirect);
+            System.out.println("token = " + token);
 ////
 //				String data = httpServletRequest.getParameter("Data");
 ////
 //				Map<String, String> parametersMap = _getResponseParameters(
 //					data);
 
-				CommerceOrder commerceOrder =
-					_commerceOrderLocalService.getCommerceOrderByUuidAndGroupId(
-						uuid, groupId);
+            CommerceOrder commerceOrder =
+                    _commerceOrderLocalService.getCommerceOrderByUuidAndGroupId(
+                            uuid, groupId);
 //
 //				SaderatGroupServiceConfiguration
 //					mercanetGroupServiceConfiguration = _getConfiguration(
@@ -183,11 +182,11 @@ public class SaderatServlet extends HttpServlet {
 //
 //				ResponseData responseData = paypageResponse.getData();
 //
-				StringBuilder transactionReference = new StringBuilder();
+            StringBuilder transactionReference = new StringBuilder();
 
-				transactionReference.append(commerceOrder.getCompanyId());
-				transactionReference.append(commerceOrder.getGroupId());
-				transactionReference.append(commerceOrder.getCommerceOrderId());
+            transactionReference.append(commerceOrder.getCompanyId());
+            transactionReference.append(commerceOrder.getGroupId());
+            transactionReference.append(commerceOrder.getCommerceOrderId());
 //
 //				ResponseCode responseCode = responseData.getResponseCode();
 //
@@ -205,22 +204,29 @@ public class SaderatServlet extends HttpServlet {
 //						responseData.getTransactionReference(),
 //						transactionReference.toString())) {
 //
-			System.out.println("**************************** commerceOrder.getCommerceOrderId() = " + commerceOrder.getCommerceOrderId());
-					_commercePaymentEngine.cancelPayment(
-						commerceOrder.getCommerceOrderId(),
-						transactionReference.toString(), httpServletRequest);
+            System.out.println("**************************** commerceOrder.getCommerceOrderId() = " + commerceOrder.getCommerceOrderId());
 
-			httpServletResponse.sendRedirect(redirect);
+            if(resultCode.equals("100")){
+                _commercePaymentEngine.completePayment(
+                        commerceOrder.getCommerceOrderId(),
+                        transactionReference.toString(), httpServletRequest);
+            }else{
+                _commercePaymentEngine.cancelPayment(
+                        commerceOrder.getCommerceOrderId(),
+                        transactionReference.toString(), httpServletRequest);
+            }
 
-			System.out.println("hereeeeeeeeeeee END Do gettttttttttt ");
+
+            httpServletResponse.sendRedirect(redirect);
+
+            System.out.println("hereeeeeeeeeeee END Do gettttttttttt ");
 //				}
 //			}
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			_portal.sendError(e, httpServletRequest, httpServletResponse);
-		}
-	}
+        } catch (Exception e) {
+            e.printStackTrace();
+            _portal.sendError(e, httpServletRequest, httpServletResponse);
+        }
+    }
 
 //	private MercanetGroupServiceConfiguration _getConfiguration(Long groupId)
 //		throws ConfigurationException {
@@ -231,39 +237,38 @@ public class SaderatServlet extends HttpServlet {
 //				groupId, MercanetCommercePaymentMethodConstants.SERVICE_NAME));
 //	}
 
-	private Map<String, String> _getResponseParameters(String data) {
-		String[] params = data.split(StringPool.BACK_SLASH + StringPool.PIPE);
+    private Map<String, String> _getResponseParameters(String data) {
+        String[] params = data.split(StringPool.BACK_SLASH + StringPool.PIPE);
 
-		Map<String, String> map = new HashMap<>();
+        Map<String, String> map = new HashMap<>();
 
-		for (String param : params)
-		{
-			String name = param.split(StringPool.EQUAL)[0];
-			String value = param.split(StringPool.EQUAL)[1];
+        for (String param : params) {
+            String name = param.split(StringPool.EQUAL)[0];
+            String value = param.split(StringPool.EQUAL)[1];
 
-			System.out.println("name = " + name + " : "+value);
+            System.out.println("name = " + name + " : " + value);
 
-			map.put(name, value);
-		}
+            map.put(name, value);
+        }
 
-		return map;
-	}
+        return map;
+    }
 
-	@Reference
-	private CommerceOrderLocalService _commerceOrderLocalService;
+    @Reference
+    private CommerceOrderLocalService _commerceOrderLocalService;
 
-	@Reference
-	private CommercePaymentEngine _commercePaymentEngine;
+    @Reference
+    private CommercePaymentEngine _commercePaymentEngine;
 
-	@Reference
-	private ConfigurationProvider _configurationProvider;
+    @Reference
+    private ConfigurationProvider _configurationProvider;
 
-	@Reference
-	private Portal _portal;
+    @Reference
+    private Portal _portal;
 
-	@Reference(
-		target = "(osgi.web.symbolicname=com.sain.commerce.payment.method.saderat)"
-	)
-	private ServletContext _servletContext;
+    @Reference(
+            target = "(osgi.web.symbolicname=com.sain.commerce.payment.method.saderat)"
+    )
+    private ServletContext _servletContext;
 
 }
