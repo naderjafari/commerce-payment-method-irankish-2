@@ -1,1 +1,1 @@
-# commerce-payment-method-saderat-bank
+# Iran Kish Payment Method for Liferay Commerce

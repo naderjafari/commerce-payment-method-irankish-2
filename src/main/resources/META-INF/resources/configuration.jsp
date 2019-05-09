@@ -1,4 +1,6 @@
-<%@ page import="com.sain.commerce.payment.method.saderat.configuration.SaderatGroupServiceConfiguration" %><%--
+<%@ page import="com.sain.commerce.payment.method.irankish.configuration.IKGroupServiceConfiguration" %>
+
+<%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -17,10 +19,10 @@
 <%@ include file="/init.jsp" %>
 
 <%
-	SaderatGroupServiceConfiguration authorizeNetCommercePaymentEngineGroupServiceConfiguration = (SaderatGroupServiceConfiguration)request.getAttribute(SaderatGroupServiceConfiguration.class.getName());
+IKGroupServiceConfiguration authorizeNetCommercePaymentEngineGroupServiceConfiguration = (IKGroupServiceConfiguration)request.getAttribute(IKGroupServiceConfiguration.class.getName());
 %>
 
-<portlet:actionURL name="editSaderatCommercePaymentMethodConfigurationMVCActionCommand" var="editCommercePaymentMethodActionURL" />
+<portlet:actionURL name="editIKCommercePaymentMethodConfigurationMVCActionCommand" var="editCommercePaymentMethodActionURL" />
 
 <aui:form action="<%= editCommercePaymentMethodActionURL %>" cssClass="container-fluid-1280" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.UPDATE %>" />
@@ -32,26 +34,7 @@
 
 	<aui:fieldset-group markupView="lexicon">
 		<aui:fieldset label="authentication">
-
 			<aui:input label="merchant-id" name="settings--merchantId--" value="<%= authorizeNetCommercePaymentEngineGroupServiceConfiguration.merchantId() %>" />
-
-			<%--<aui:input label="secret-key" name="settings--secretKey--" value="<%= authorizeNetCommercePaymentEngineGroupServiceConfiguration.secretKey() %>" />--%>
-
-			<%--<aui:input label="key-version" name="settings--keyVersion--" value="<%= authorizeNetCommercePaymentEngineGroupServiceConfiguration.keyVersion() %>" />--%>
-
-			<%--<aui:select name="settings--environment--">--%>
-
-				<%--<%--%>
-					<%--for (String environment : MercanetCommercePaymentMethodConstants.ENVIRONMENTS) {--%>
-				<%--%>--%>
-
-				<%--<aui:option label="<%= environment %>" selected="<%= environment.equals(authorizeNetCommercePaymentEngineGroupServiceConfiguration.environment()) %>" value="<%= environment %>" />--%>
-
-				<%--<%--%>
-					<%--}--%>
-				<%--%>--%>
-
-			<%--</aui:select>--%>
 		</aui:fieldset>
 	</aui:fieldset-group>
 
